@@ -30,9 +30,18 @@ import SocketServer
 class MyWebServer(SocketServer.BaseRequestHandler):
     
     def handle(self):
+        # self.data = self.request.recv(1024).strip()
+        # print ("Got a request of: %s\n" % self.data)
+        # self.request.sendall("OK")
         self.data = self.request.recv(1024).strip()
-        print ("Got a request of: %s\n" % self.data)
-        self.request.sendall("OK")
+        file_handler = open('www/index.html', 'rb')
+        response_content = file_handler.read()
+        file_handler.close()
+        # response_data = response_content.encode()
+        # self.request.send('200')
+        self.request.send('HTTP/1.1 200 OK\nContent-Type: text/html\n\n')
+        self.request.sendall(response_content)
+
 
 if __name__ == "__main__":
     HOST, PORT = "localhost", 8080
