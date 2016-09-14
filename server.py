@@ -49,8 +49,8 @@ class MyWebServer(SocketServer.BaseRequestHandler):
 
         try: 
             #Default case
-            if (self.split_data[1]=='/'): 
-                self.split_data[1] = '/index.html'
+            if (self.split_data[1][-1]=='/'): 
+                self.split_data[1] = self.split_data[1] + 'index.html'
      
             #Deals with html files
             if ("html" in self.split_data[1]): 
