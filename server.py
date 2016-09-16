@@ -41,7 +41,6 @@ class MyWebServer(SocketServer.BaseRequestHandler):
     return
 
   def handle(self):
-    
     #Set up and split the data to get the URL
     self.data = self.request.recv(1024).strip()
     self.split_data = self.data.split()
@@ -50,18 +49,20 @@ class MyWebServer(SocketServer.BaseRequestHandler):
       #Default case
       if (self.split_data[1][-1]=='/'): 
         self.split_data[1] = self.split_data[1] + 'index.html'
-
       #Deals with html files
       if ("html" in self.split_data[1]): 
         self.displayfile("html")
-
       #deals with CSS files
       elif ("css" in self.data):
         self.displayfile("css")
-
-      #deals with files that haven't been found
+      #test redirect
       else:
-        self.request.send('HTTP/1.1 404 NOT FOUND\r\n')
+        test301url = self.url_start + self.split_data[1] + "/index.html"
+        file_handler = open(test301url, 'rb')
+        file_handler.close()
+        # If that worked, send a 301
+        self.request.send('HTTP/1.1 301 MOVED PERMANENTLY\r\n')
+        self.request.send('Location: ' + self.split_data[1] + "/index.html\r\n")
 
     except IOError: 
       self.request.send('HTTP/1.1 404 NOT FOUND\r\n')
